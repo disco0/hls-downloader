@@ -22,9 +22,22 @@ async function fetchWithRetry<Data>(
   throw new Error("Fetch error");
 }
 
-export async function fetchText(url: string, attempts: number = 1) {
-  const fetchFn: FetchFn<string> = () => fetch(url).then((res) => res.text());
-  return fetchWithRetry(fetchFn, attempts);
+const toHeadersTuple = (headers: HeadersInit = [ ]): [string, string][] =>
+    Array.isArray(headers)
+        ? [ ...headers ] :
+    headers instanceof Headers
+        // @ts-expect-error
+        ? [...headers.entries()] :
+    // Record<string, string>
+    [...Object.entries(headers)]
+
+export async function fetchText(url: string, attempts: number = 1, init?: Partial<RequestInit>)
+{
+    const fetchFn: FetchFn<string> = () => (
+        (init ? console.log(`fetch("%s", %o)\nHeaders: %o`, url, init, toHeadersTuple(init.headers)) : void 0),
+        fetch(url, init).then((res) => res.text())
+    );
+    return fetchWithRetry(fetchFn, attempts);
 }
 
 export async function fetchArrayBuffer(url: string, attempts: number = 1) {

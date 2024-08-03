@@ -1,5 +1,5 @@
 import { Level, PlaylistStatus } from "@hls-downloader/core/lib/entities";
-import { RootState } from "@hls-downloader/core/lib/store";
+import type { RootState } from "@hls-downloader/core/lib/store/root-reducer";
 import { levelsSlice } from "@hls-downloader/core/lib/store/slices";
 import { useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";

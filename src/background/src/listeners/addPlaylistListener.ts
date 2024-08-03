@@ -24,14 +24,20 @@ export function addPlaylistListener(store: ReturnType<typeof createStore>) {
           "256": "assets/icons/256-new.png",
         },
       });
-
+      console.dir({...details})
+      const initiator = details.initiator // details.frameId === 0 ? tab.url : details.documentUrl ?? tab.url
+      console.log('details.documentUrl: %s', details.documentUrl)
+      console.log('details.url: %s', details.url)
+      console.log('initiator: %s', initiator)
       store.dispatch(
         playlistsSlice.actions.addPlaylist({
           id: details.url,
           uri: details.url,
-          initiator: tab.url,
+          initiator,
           pageTitle: tab.title,
           createdAt: Date.now(),
+          tabId: tab.id,
+        //   documentUrl: details.frameId !== 0 ? details.documentUrl : undefined,
         })
       );
     },

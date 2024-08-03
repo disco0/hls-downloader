@@ -8,10 +8,13 @@ export const getFragmentsDetailsFactory = (
   const run = async (
     playlist: Level,
     fetchAttempts: number,
+    init?: Partial<RequestInit>
   ): Promise<Fragment[]> => {
+    // console.debug(`fetch("%s")`, playlist.uri)
     const levelPlaylistText = await loader.fetchText(
       playlist.uri,
       fetchAttempts,
+      init
     );
     const fragments = parser.parseLevelPlaylist(
       levelPlaylistText,

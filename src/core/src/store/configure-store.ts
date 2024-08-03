@@ -3,6 +3,7 @@ import { createEpicMiddleware } from "redux-observable";
 import { createRootEpic } from "../controllers/root-epic";
 import { Dependencies } from "../services";
 import { rootReducer, RootState, RootAction } from "./root-reducer";
+// import * as Logger from "redux-logger";
 import logger from "redux-logger";
 
 const _dummy: Middleware = () => (next) => (action) => next(action);
@@ -22,6 +23,7 @@ export function createStore(
   const store = configureStore<RootState, RootAction, Middleware[]>({
     reducer: rootReducer,
     middleware: [logger, epicMiddleware],
+    // middleware: [logger, epicMiddleware],
     preloadedState,
   });
 

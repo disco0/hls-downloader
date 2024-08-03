@@ -12,6 +12,11 @@ import filenamify from "filenamify";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
 
+const ffmpegExtraArgs = [
+    `-copy_unknown`,
+
+]
+
 const buckets: Record<string, IndexedDBBucket> = {};
 
 interface ChunksDB extends DBSchema {
@@ -149,33 +154,55 @@ export class IndexedDBBucket implements Bucket {
 
   async getLink(): Promise<string> {
     if (!this.db) {
-      throw Error();
+      throw Error('Missing db.');
     }
 
+    const baseStyle = ['color: #0055FF; font-weight: 600', '']
+
     try {
+      console.log('%c[getLink]%c await this.streamToMp4Blob()', ...baseStyle)
       const mp4Blob = await this.streamToMp4Blob();
+      console.log('%c[getLink]%c URL.createObjectURL(mp4Blob)', ...baseStyle)
       const url = URL.createObjectURL(mp4Blob);
       return url;
     } catch (error) {
       console.error(error);
+      console.dir(error)
       return "";
     }
   }
 
   private async streamToMp4Blob() {
     if (!this.db) {
-      throw Error();
+      throw Error('Missing db');
     }
+    const baseStyle = ['color: #0055FF; font-weight: 600', '']
+    console.log('%c[streamToMp4Blob]%c await this.stream()', ...baseStyle)
     const stream = await this.stream();
+    console.log('%c[streamToMp4Blob]%c new Response(stream', ...baseStyle)
     const response = new Response(stream, {
       headers: {
         "Content-Type": "video/mp2t",
       },
     });
+    console.log('%c[streamToMp4Blob]%c await response.blob()', ...baseStyle)
     const blob = await response.blob();
+    if(blob.size === 0)
+    {
+        throw new Error('Empty blob')
+    }
+    else
+    {
+        console.log('%c[streamToMp4Blob]%c blob[%s] size: %s', ...baseStyle, blob.type, blob.size)
+    }
+    console.log('%c[streamToMp4Blob]%c await fetchFile(blob)', ...baseStyle)
+    console.debug(blob)
     const file = await fetchFile(blob);
+    console.log('%c[streamToMp4Blob]%c await this.ffmpeg.writeFile(`${this.fileName}.ts`, file);', ...baseStyle)
     await this.ffmpeg.writeFile(`${this.fileName}.ts`, file);
+    console.log('%c[streamToMp4Blob]%c await this.ffmpeg.exec([', ...baseStyle)
     await this.ffmpeg.exec([
+      ...ffmpegExtraArgs,
       "-i",
       `${this.fileName}.ts`,
       "-acodec",
@@ -184,7 +211,9 @@ export class IndexedDBBucket implements Bucket {
       "copy",
       `${this.fileName}.mp4`,
     ]);
+    console.log('%c[streamToMp4Blob]%c await this.ffmpeg.deleteFile(`${this.fileName}.ts`);', ...baseStyle)
     await this.ffmpeg.deleteFile(`${this.fileName}.ts`);
+    console.log('%c[streamToMp4Blob]%c const data = await this.ffmpeg.readFile(`${this.fileName}.mp4`);', ...baseStyle)
     const data = await this.ffmpeg.readFile(`${this.fileName}.mp4`);
     return new Blob([data], { type: "video/mp4" });
   }

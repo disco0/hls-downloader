@@ -4,7 +4,7 @@ import { filter, map, mergeMap } from "rxjs/operators";
 import { RootAction, RootState } from "../store/root-reducer";
 import { playlistsSlice } from "../store/slices";
 import { levelsSlice } from "../store/slices/levels-slice";
-import { Dependencies } from "../services";
+import { Dependencies, addCustomReferrer } from "../services";
 import { getLevelsFactory } from "../use-cases";
 
 export const fetchPlaylistLevelsEpic: Epic<
@@ -18,13 +18,15 @@ export const fetchPlaylistLevelsEpic: Epic<
     map((action) => action.payload.playlistID),
     map((playlistID) => store$.value.playlists.playlists[playlistID]!),
     mergeMap(
-      ({ uri }) =>
+      ({ uri, initiator }) => (
         from(
           getLevelsFactory(loader, parser)(
             uri,
             store$.value.config.fetchAttempts,
+            initiator ? addCustomReferrer(initiator) : undefined
           ),
-        ),
+        )
+      ),
       ({ id }, levels) => ({
         levels,
         playlistID: id,

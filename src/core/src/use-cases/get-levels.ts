@@ -5,11 +5,13 @@ export const getLevelsFactory = (loader: ILoader, parser: IParser) => {
   const run = async (
     masterPlaylistURI: string,
     fetchAttempts: number,
+    init?: Partial<RequestInit>
   ): Promise<Level[]> => {
     try {
       const masterPlaylistText = await loader.fetchText(
         masterPlaylistURI,
         fetchAttempts,
+        init
       );
       return parser.parseMasterPlaylist(masterPlaylistText, masterPlaylistURI);
     } catch (error) {

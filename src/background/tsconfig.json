@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "lib": ["WebWorker", "DOM", "ES2023"],
+    "lib": ["WebWorker", "DOM", "ES2023", "DOM.Iterable"],
+    "allowArbitraryExtensions": true
   },
   "include": ["src/**/*"],
 }

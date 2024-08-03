@@ -18,19 +18,29 @@ export const addDownloadJobEpic: Epic<
     map((action) => action.payload.levelID),
     map((levelID) => store$.value.levels.levels[levelID]),
     map((level) => level!),
+    // mergeMap(
+    //   level =>
+    //     from(getFragmentsDetailsFactory(loader, parser)(level, store$.value.config.fetchAttempts))
+    //             .pipe((fragments) => ({level, fragments}))
+    // )
     mergeMap(
-      (level) =>
-        from(
-          getFragmentsDetailsFactory(loader, parser)(
-            level,
-            store$.value.config.fetchAttempts,
-          ),
-        ),
-      (level, fragments) => ({
-        fragments,
-        level,
-      }),
+      level => from(getFragmentsDetailsFactory(loader, parser)(level, store$.value.config.fetchAttempts)),
+      (level, fragments) => ({ fragments, level }),
     ),
+    // mergeMap(
+    //   (level) =>
+    //     from(
+    //       getFragmentsDetailsFactory(loader, parser)(
+    //         level,
+    //         store$.value.config.fetchAttempts,
+    //       ),
+    //     ),
+    //   (level, fragments) => ({
+    //     fragments,
+    //     level,
+    //   }),
+    // ),
+
     map(({ level, fragments }) => ({
       level,
       fragments,

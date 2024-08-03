@@ -56,6 +56,7 @@ export const M3u8Parser: IParser = {
         });
       },
     );
+    console.dir({raw: string, playlists, results, /*audioResults*/})
 
     return results.concat(audioResults);
   },

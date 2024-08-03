@@ -16,6 +16,8 @@
   "permissions": [
     "webRequest",
     "unlimitedStorage",
+    "<all_urls>",
+    "webRequestBlocking",
     "storage",
     "downloads",
     "tabs",
