@@ -1,3 +1,8 @@
+// import type { } from '@hls-downloader/background/lib/services/indexedb-fs'
+export declare type MarkedURLString =
+  | string
+  | { extension: string; toString(): string }
+
 export interface IFS {
   cleanup(): Promise<void>;
   getBucket(id: string): Promise<Bucket>;
@@ -14,5 +19,5 @@ export interface IFS {
 
 export interface Bucket {
   write(index: number, data: ArrayBuffer): Promise<void>;
-  getLink(): Promise<string>;
+  getLink(): Promise<MarkedURLString>;
 }

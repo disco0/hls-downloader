@@ -12,6 +12,7 @@ export const M3u8Parser: IParser = {
     parser.push(string);
     return parser.manifest.segments.map((segment, index) => ({
       index,
+      duration: segment.duration,
       key: segment.key
         ? {
             iv: segment.key.iv,
@@ -27,6 +28,7 @@ export const M3u8Parser: IParser = {
   parseMasterPlaylist(string: string, baseurl: string): Level[] {
     const parser = new Parser();
     parser.push(string);
+
     const playlists = parser.manifest?.playlists ?? [];
     const audioPlaylists = parser.manifest?.mediaGroups?.AUDIO ?? {};
     const results = playlists.map((playlist) => ({

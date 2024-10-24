@@ -27,11 +27,14 @@ export const saveAsJobEpic: Epic<
     mergeMap(
       ({ dialog, link, job }) =>
         from(
-          saveAsFactory(fs)(job.filename, link, {
-            dialog,
-          }),
+          saveAsFactory(fs)(job.filename,
+            typeof link === 'object' ? link.toString() : link,
+            {
+              dialog,
+              ...typeof link === 'object' ? { extension: link.extension } : { }
+            }),
         ),
-      ({ job, link }) => ({ job, link }),
+      ({ job, link }) => ({ job, link: typeof link === 'object' ? link.toString() : link }),
     ),
     mergeMap(({ job, link }) =>
       of(jobsSlice.actions.saveAsSuccess({ jobId: job.id, link })),

@@ -5,5 +5,6 @@ export class Fragment {
     readonly key: Key,
     readonly uri: string,
     readonly index: number,
+    readonly duration?: number,
   ) {}
 }
