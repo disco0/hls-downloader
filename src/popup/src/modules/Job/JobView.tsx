@@ -33,8 +33,8 @@ const JobView = ({
     >
       <div className="flex flex-col items-start justify-between w-full mb-1">
         <div className="flex flex-col">
-          <div className="mr-1 truncate">{job.filename}</div>
-          <div className="truncate text-muted-foreground">
+          <div className="mr-1">{job.filename}</div>
+          <div className="text-muted-foreground">
             {new Date(job.createdAt!).toLocaleString()}
           </div>
         </div>
